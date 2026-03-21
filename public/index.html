@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <h2>testing authorization</h2>
+
+  <section>
+    <h3>Login</h3>
+    <form action="/auth/register" method="POST">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+  </section>
+
+  <section>
+    <h3>Enter</h3>
+    <form action="/auth/login" method="POST">
+      <input type="text" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </section>
+
+  <section>
+    <h3>Access Check</h3>
+    <a href="/protected"><button type="button">Go to Protected Page</button></a>
+    <a href="/auth/logout"><button type="button">Logout</button></a>
+  </section>
+
+
+
+
+</body>
+
+</html>
