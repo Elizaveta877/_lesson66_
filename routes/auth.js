@@ -42,4 +42,59 @@ router.get('/logout', (req, res) => {
   });
 });
 
+router.post('/insert-many', async (req, res) => {
+  try {
+    const users = await User.insertMany(req.body);
+    res.status(201).json({message: 'користувачів додано', count: users.length});
+  } catch (err) {
+    res.status(400).json({error: err.message})
+
+  }
+});
+
+// update
+router.put('/update-password', async (req, res) => {
+  try {
+    const result = await User.updateOne({
+      email: req.body.email},
+      {$set: {password: req.body.newPassword}}
+   );
+   res.json({message: 'оновлено!', details: result});
+  } catch (err) {
+    res.status(400).json({error: err.message})
+  }
+});
+
+router.put('/replace/:id', async (req, res) => {
+  try {
+    const result = await User.replaceOne({
+      _id: req.params.id}, req.body);
+      res.json(result);
+  } catch (err) {
+    res.status(400).json({error: err.message})
+  }
+});
+
+// delete
+router.delete('/delete-one', async (req, res) => {
+  try {
+    const result = await User.deleteOne({
+      email:req.body.email});
+      res.json(result);
+  } catch (err) {
+    res.status(400).json({error: err.message});
+  }
+});
+
+
+router.delete('/delete-test', async (req, res) => {
+  try {
+    const result = await User.deleteMany({
+      email: {$regex: /test/i} });
+      res.json({message: 'видалення завершено', count: result.deletedCount });
+    } catch (err) {
+      res.status(400).json({error: err.message});
+    }
+  });
+
 module.exports = router;

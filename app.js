@@ -50,11 +50,12 @@ app.use(express.static('public'));
 
 app.get('/users', async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find({}, { email: 1, _id: 1 });
+
     res.send(`
       <h1>Список користувачів з MongoDB</h1>
       <ul>
-        ${users.map(user => `<li>${user.email}</li>`).join('')}
+        ${users.map(user => `<li>${user.email}(ID: ${user._id}</li>`).join('')}
       </ul>
       <a href="/">Back to Home</a>
     `);
