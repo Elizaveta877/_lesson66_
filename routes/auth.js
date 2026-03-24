@@ -2,20 +2,26 @@ const express = require('express');
 const passport = require('passport');
 const UserStore = require('../models/userStore');
 const router = express.Router();
-
+const User = require('../models/User');
 
 router.post('/register', async (req, res) => {
+  console.log('Received registration data:', req.body);
   const { email, password } = req.body;
   try {
-    if (UserStore.findByEmail(email)) {
-      return res.status(400).json({ message: 'Email already exists' });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.send('Користувач вже існує');
     }
-    const newUser = await UserStore.create(email, password);
-    res.status(201).json({ message: 'User registered successfully', user: { id: newUser.id, email: newUser.email } });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+    const newUser = new User({ email, password });
+    await newUser.save();
+    res.redirect(`/users`);
+  } catch (err) {
+    console.error(err);
+        res.status(500).send('Помилка сервера');
+      }
+    });
+
+
 
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
