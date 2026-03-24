@@ -86,7 +86,6 @@ router.delete('/delete-one', async (req, res) => {
   }
 });
 
-
 router.delete('/delete-test', async (req, res) => {
   try {
     const result = await User.deleteMany({
