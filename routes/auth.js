@@ -96,4 +96,46 @@ router.delete('/delete-test', async (req, res) => {
     }
   });
 
+router.get('/cursor-test', async(req, res) => {
+  try {
+    const cursor = User.find().cursor();
+    let count = 0;
+    await cursor.eachAsync(async (doc) => {
+      console.log(`Курсор обробляє: ${doc.email}`);
+      count++;
+    });
+    res.json({message: 'обробка завершена', count});
+  } catch (err) {
+    res.status(400).json({error: err.message});
+  }
+});
+
+router.get('/stats', async (req, res) => {
+  try {
+
+    const stats = await User.aggregate([
+      {
+        $project: {
+          domain: { $arrayElemAt: [ { $split: ['$email', '@'] }, 1 ] }
+          }
+        },
+      {
+        $group: {
+          _id: "$domain",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]);
+    res.json({
+      title: 'Статистика доменів електронної пошти',
+      data: stats
+    });
+  } catch (err) {
+  res.status(400).json({error: err.message});
+  }
+});
+
 module.exports = router;
